@@ -1,23 +1,33 @@
-.bg-emerald {
-    background-color: #0f766e !important;
+.navbar-custom {
+    background-color: #0f766e;
 }
 
-.bg-emerald-dark {
-    background-color: #0d9488 !important;
+.text-custom-green {
+    color: #0f766e;
 }
 
-.py-1-5 {
-    padding-top: 0.375rem;
-    padding-bottom: 0.375rem;
+.btn-custom-green {
+    background-color: #0f7657;
+    color: #ffffff;
+    border: none;
 }
 
-.table thead th {
-    font-weight: 600;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+.btn-custom-green:hover {
+    background-color: #0d6543;
+    color: #ffffff;
 }
 
-.btn-outline-light:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+.badge-status-disponivel {
+    background-color: #0f7643;
+    color: #ffffff;
+}
+
+.badge-status-adotado {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+.badge-status-tratamento {
+    background-color: #d97706;
+    color: #ffffff;
 }

@@ -2,114 +2,127 @@
 session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Proteção da página: se não estiver logado, redireciona para a raiz
+use Controller\AnimalController;
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../index.php');
     exit();
 }
 
-$userNome = $_SESSION['user_nome'] ?? 'joao@exemplo.com';
+$animalController = new AnimalController();
+
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $animalController->delete((int)$_GET['id']);
+    header('Location: painelAnimais.php');
+    exit();
+}
+
+$animais = $animalController->index();
+
+// Função auxiliar para limpar codificações HTML gravadas incorretamente
+function formatarTexto(?string $texto): string {
+    if (empty($texto)) return '';
+    return htmlspecialchars(html_entity_decode(html_entity_decode($texto, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PetControl - Painel de Animais</title>
-    <!-- Bootstrap 5 -->
+    <title>PetControl - Painel de Controle</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS Global e do Painel -->
     <link rel="stylesheet" href="../templates/css/global.css">
     <link rel="stylesheet" href="../templates/css/painelAnimais.css">
 </head>
 <body class="bg-light">
 
-    <!-- Navbar Verde Esmeralda Profissional -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-emerald shadow-sm py-3">
+    <!-- Topbar Verde Escuro -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3 mb-4">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold fs-4" href="#">
-                <i class="fa-solid fa-paw text-light"></i>
-                <span>PetControl</span>
+            <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" href="#">
+                <i class="fa-solid fa-paw"></i> PetControl
             </a>
-            
             <div class="d-flex align-items-center gap-3">
-                <div class="user-badge d-flex align-items-center gap-2 text-white bg-emerald-dark px-3 py-1-5 rounded-pill shadow-sm">
-                    <i class="fa-solid fa-circle-user fs-5 text-light"></i>
-                    <span class="small fw-semibold"><?= htmlspecialchars($userNome) ?></span>
-                </div>
-                
-                <a href="../index.php?action=logout" class="btn btn-outline-light btn-sm px-3 rounded-pill fw-semibold border-2 d-flex align-items-center gap-1">
-                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                <span class="btn btn-sm btn-light rounded-pill px-3 disabled text-dark border-0 opacity-100 fw-medium">
+                    <i class="fa-solid fa-user me-1 text-secondary"></i> <?= htmlspecialchars($_SESSION['user_nome'] ?? 'Usuário') ?>
+                </span>
+                <a href="../index.php?action=logout" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Sair
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Conteúdo do Painel -->
-    <main class="container my-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Conteúdo Principal -->
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
-                <h2 class="fw-bold text-success mb-1">Painel de Controle</h2>
-                <p class="text-muted small mb-0">Gerencie e acompanhe o status dos seus animais cadastrados.</p>
+                <h2 class="fw-bold text-custom-green mb-1">Painel de Controle</h2>
+                <p class="text-secondary mb-0">Gerencie e acompanhe o status dos seus animais cadastrados.</p>
             </div>
-            <a href="formAnimal.php" class="btn btn-success px-4 py-2 rounded-3 shadow-sm fw-semibold d-flex align-items-center gap-2">
-                <i class="fa-solid fa-plus"></i> Novo Animal
+            <a href="formAnimal.php" class="btn btn-custom-green fw-semibold px-3 py-2 rounded-3">
+                + Novo Animal
             </a>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-emerald text-white">
+        <!-- Tabela Estilizada -->
+        <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light border-bottom">
+                        <tr class="text-secondary small fw-bold">
+                            <th class="ps-4 py-3">NOME</th>
+                            <th class="py-3">ESPÉCIE</th>
+                            <th class="py-3">RAÇA</th>
+                            <th class="py-3">IDADE</th>
+                            <th class="py-3">STATUS</th>
+                            <th class="pe-4 py-3 text-end">AÇÕES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($animais)): ?>
                             <tr>
-                                <th class="py-3 px-4">Nome</th>
-                                <th class="py-3">Espécie</th>
-                                <th class="py-3">Raça</th>
-                                <th class="py-3">Idade</th>
-                                <th class="py-3">Status</th>
-                                <th class="py-3 px-4 text-end">Ações</th>
+                                <td colspan="6" class="text-center py-5 text-secondary">
+                                    <div class="mb-2">
+                                        <i class="fa-solid fa-folder-closed fa-3x text-muted opacity-50"></i>
+                                    </div>
+                                    <p class="mb-0">Nenhum animal cadastrado até o momento.</p>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (isset($animais) && count($animais) > 0): ?>
-                                <?php foreach ($animais as $animal): ?>
+                        <?php else: ?>
+                            <?php foreach ($animais as $animal): ?>
                                 <tr>
-                                    <td class="px-4 fw-semibold text-dark"><?= htmlspecialchars($animal['nome']) ?></td>
-                                    <td><?= htmlspecialchars($animal['especie']) ?></td>
-                                    <td><?= htmlspecialchars($animal['raca']) ?></td>
+                                    <td class="ps-4 fw-semibold text-dark"><?= formatarTexto($animal['nome']) ?></td>
+                                    <td><?= formatarTexto($animal['especie']) ?></td>
+                                    <td><?= formatarTexto($animal['raca']) ?></td>
                                     <td><?= htmlspecialchars($animal['idade']) ?> anos</td>
                                     <td>
-                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
-                                            <?= htmlspecialchars($animal['status']) ?>
-                                        </span>
+                                        <?php 
+                                            $st = formatarTexto($animal['status'] ?? 'Disponível');
+                                            $badgeClass = 'badge-status-disponivel';
+                                            if (mb_strtolower($st) === 'adotado') $badgeClass = 'badge-status-adotado';
+                                            if (mb_strtolower($st) === 'tratamento') $badgeClass = 'badge-status-tratamento';
+                                        ?>
+                                        <span class="badge rounded-pill px-3 py-2 <?= $badgeClass ?>"><?= $st ?></span>
                                     </td>
-                                    <td class="px-4 text-end">
-                                        <a href="formAnimal.php?id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-primary rounded-circle me-1" title="Editar">
+                                    <td class="pe-4 text-end">
+                                        <a href="formAnimal.php?id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
-                                        <a href="../index.php?action=delete&id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-danger rounded-circle" title="Excluir" onclick="return confirm('Deseja realmente excluir este registro?');">
+                                        <a href="painelAnimais.php?action=delete&id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja realmente excluir este animal?');" title="Excluir">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
                                     </td>
                                 </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="fa-solid fa-folder-open fs-1 d-block mb-2 text-secondary opacity-50"></i>
-                                        Nenhum animal cadastrado até o momento.
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </main>
+    </div>
 
 </body>
 </html>
