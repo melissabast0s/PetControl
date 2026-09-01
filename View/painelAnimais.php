@@ -1,9 +1,17 @@
 <?php
+/**
+ * listagem de animais.
+ * Mostra a tabela com os animais cadastrados
+ *
+ * @package PetControl\View
+ */
+
 session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Controller\AnimalController;
 
+// Verifica se o usuário está autenticado
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../index.php');
     exit();
@@ -11,18 +19,34 @@ if (!isset($_SESSION['user_id'])) {
 
 $animalController = new AnimalController();
 
+
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
     $animalController->delete((int)$_GET['id']);
     header('Location: painelAnimais.php');
     exit();
 }
 
+// Busca a lista de todos os animais cadastrados
 $animais = $animalController->index();
 
-// Função auxiliar para limpar codificações HTML gravadas incorretamente
+/**
+ * converter caracteres especiais HTML
+ * no banco de dados.
+ *
+ * @param string|null $texto Texto vindo do banco de dados.
+ * @return string Texto decodificado 
+ */
 function formatarTexto(?string $texto): string {
     if (empty($texto)) return '';
-    return htmlspecialchars(html_entity_decode(html_entity_decode($texto, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars(
+        html_entity_decode(
+            html_entity_decode($texto, ENT_QUOTES, 'UTF-8'), 
+            ENT_QUOTES, 
+            'UTF-8'
+        ), 
+        ENT_QUOTES, 
+        'UTF-8'
+    );
 }
 ?>
 <!DOCTYPE html>
@@ -31,6 +55,7 @@ function formatarTexto(?string $texto): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PetControl - Painel de Controle</title>
+   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../templates/css/global.css">
@@ -38,7 +63,7 @@ function formatarTexto(?string $texto): string {
 </head>
 <body class="bg-light">
 
-    <!-- Topbar Verde Escuro -->
+   
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3 mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" href="#">
@@ -55,7 +80,6 @@ function formatarTexto(?string $texto): string {
         </div>
     </nav>
 
-    <!-- Conteúdo Principal -->
     <div class="container">
         <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
@@ -67,7 +91,7 @@ function formatarTexto(?string $texto): string {
             </a>
         </div>
 
-        <!-- Tabela Estilizada -->
+      
         <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
@@ -83,6 +107,7 @@ function formatarTexto(?string $texto): string {
                     </thead>
                     <tbody>
                         <?php if (empty($animais)): ?>
+                           
                             <tr>
                                 <td colspan="6" class="text-center py-5 text-secondary">
                                     <div class="mb-2">
@@ -92,6 +117,7 @@ function formatarTexto(?string $texto): string {
                                 </td>
                             </tr>
                         <?php else: ?>
+                          
                             <?php foreach ($animais as $animal): ?>
                                 <tr>
                                     <td class="ps-4 fw-semibold text-dark"><?= formatarTexto($animal['nome']) ?></td>
@@ -100,6 +126,7 @@ function formatarTexto(?string $texto): string {
                                     <td><?= htmlspecialchars($animal['idade']) ?> anos</td>
                                     <td>
                                         <?php 
+                                           
                                             $st = formatarTexto($animal['status'] ?? 'Disponível');
                                             $badgeClass = 'badge-status-disponivel';
                                             if (mb_strtolower($st) === 'adotado') $badgeClass = 'badge-status-adotado';
@@ -108,9 +135,11 @@ function formatarTexto(?string $texto): string {
                                         <span class="badge rounded-pill px-3 py-2 <?= $badgeClass ?>"><?= $st ?></span>
                                     </td>
                                     <td class="pe-4 text-end">
+                                        
                                         <a href="formAnimal.php?id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
+                                       
                                         <a href="painelAnimais.php?action=delete&id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja realmente excluir este animal?');" title="Excluir">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>

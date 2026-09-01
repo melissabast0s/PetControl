@@ -3,21 +3,11 @@ namespace Controller;
 
 use Model\User;
 
-/**
- * Classe UserController
- * 
- * Intermedia as requisições das Views com a lógica de negócios da Model de Usuários,
- * gerenciando login, registro de conta e encerramento de sessão (logout).
- */
 class UserController {
-    /**
-     * @var User Instância da model de Usuário
-     */
+    
     private User $userModel;
 
-    /**
-     * Construtor do Controller. Instancia o modelo de dados de usuário.
-     */
+    
     public function __construct() {
         $this->userModel = new User();
     }
@@ -27,7 +17,7 @@ class UserController {
      *
      * @param string $email E-mail informado no login
      * @param string $senha Senha informada no login
-     * @return bool Retorna true se a autenticação for bem-sucedida, false caso contrário
+     * @return bool Retorna true se a autenticação for bem-sucedida, falso caso contrário
      */
     public function login(string $email, string $senha): bool {
         $user = $this->userModel->getByEmail($email);
@@ -43,12 +33,12 @@ class UserController {
     }
 
     /**
-     * Cadastra um novo usuário caso o e-mail informado ainda não esteja cadastrado.
+     * Cadastra um novo usuário caso o e-mail informado ainda não esteja cadastrado
      *
      * @param string $nome Nome do usuário
      * @param string $email E-mail do usuário
      * @param string $senha Senha do usuário
-     * @return bool Retorna true se registrado com sucesso, false se e-mail já existir
+     * @return bool Retorna true se registrado com sucesso, falso se e-mail já existir
      */
     public function register(string $nome, string $email, string $senha): bool {
         // Impede duplicidade de cadastros por e-mail
@@ -60,7 +50,7 @@ class UserController {
     }
 
     /**
-     * Destrói a sessão atual do usuário e redireciona para a página inicial.
+     * Tira a sessão atual do usuário e redireciona para a página inicial
      *
      * @return void
      */
