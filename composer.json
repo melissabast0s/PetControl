@@ -1,0 +1,11 @@
+{
+    "name": "melis/pet-control",
+    "description": "Sistema de Gestao de Animais",
+    "autoload": {
+        "psr-4": {
+            "Controller\\": "Controller/",
+            "Model\\": "Model/",
+            "Config\\": "Config/"
+        }
+    }
+}

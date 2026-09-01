@@ -1,0 +1,13 @@
+.card-form {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(13, 148, 136, 0.1);
+    background-color: #ffffff;
+}
+
+.card-form .card-header {
+    background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+    color: #ffffff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}

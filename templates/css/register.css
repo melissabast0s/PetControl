@@ -1,0 +1,28 @@
+main {
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+form {
+    width: 100%;
+    max-width: 450px;
+    padding: 2.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 10px 25px rgba(13, 148, 136, 0.15);
+    border: 1px solid #e2e8f0;
+}
+
+.form__header figure {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+}
+
+button[type="submit"] {
+    border: none;
+    color: #ffffff;
+    padding: 0.75rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #0d9488 0%, #059669 100%);
+}
