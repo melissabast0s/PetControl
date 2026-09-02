@@ -76,7 +76,7 @@ function formatarTexto(?string $texto): string {
         <div class="d-flex justify-content-between align-items-start mb-4">
             <div>
                 <h2 class="fw-bold text-custom-green mb-1">Painel de Controle</h2>
-                <p class="text-secondary mb-0">Gerencie e acompanhe o status dos seus animais cadastrados.</p>
+                <p class="text-secondary mb-0">Gerencie e acompanhe o status dos animais cadastrados.</p>
             </div>
             <a href="formAnimal.php" class="btn btn-custom-green fw-semibold px-3 py-2 rounded-3">
                 + Novo Animal
