@@ -13,32 +13,69 @@ if (!isset($_SESSION['user_id'])) {
 
 $animalController = new AnimalController();
 
+// para excluir o animal
+$action = filter_input(INPUT_GET, 'action', FILTER_DEFAULT);
+$deleteId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $animalController->delete((int)$_GET['id']);
+if ($action === 'delete' && $deleteId) {
+    $animalController->delete($deleteId);
     header('Location: painelAnimais.php');
     exit();
 }
 
-// Busca a lista de todos os animais cadastrados
-$animais = $animalController->index();
+// navegação (todos e os disponiveis)
+$aba = filter_input(INPUT_GET, 'aba', FILTER_DEFAULT) ?? 'todos';
+
+if ($aba === 'disponiveis') {
+    $animais = $animalController->disponiveis();
+} else {
+    $animais = $animalController->index();
+}
 
 /**
  * Converte caracteres especiais HTML no banco de dados
  * @param string|null $texto Texto do banco de dados
- * @return string Texto decodificado 
+ * @return string Texto decodificado
  */
 function formatarTexto(?string $texto): string {
     if (empty($texto)) return '';
     return htmlspecialchars(
         html_entity_decode(
-            html_entity_decode($texto, ENT_QUOTES, 'UTF-8'), 
-            ENT_QUOTES, 
+            html_entity_decode($texto, ENT_QUOTES, 'UTF-8'),
+            ENT_QUOTES,
             'UTF-8'
-        ), 
-        ENT_QUOTES, 
+        ),
+        ENT_QUOTES,
         'UTF-8'
     );
+}
+
+/**
+ * idade do animal
+ * @param float|int|string $idade
+ * @return string 
+ */
+function formatarIdade($idade): string {
+    $num = (float)$idade;
+
+    // Se o for menor que 1 (ex: 0.1, 0.6, 0.11), são meses
+    if ($num < 1.0) {
+        $meses = (int)round($num * 10);
+
+        if ($num >= 0.10 && $num < 0.12) {
+            $meses = (int)round($num * 100);
+        }
+
+        if ($meses === 0) {
+            return 'Menos de 1 mês';
+        }
+
+        return $meses . ($meses === 1 ? ' mês' : ' meses');
+    }
+
+    // pra 1 ano ou mais
+    $anos = ($num == (int)$num) ? (int)$num : $num;
+    return $anos . ($anos == 1 ? ' ano' : ' anos');
 }
 ?>
 <!DOCTYPE html>
@@ -55,7 +92,6 @@ function formatarTexto(?string $texto): string {
 </head>
 <body class="bg-light">
 
-   
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3 mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold fs-4 d-flex align-items-center gap-2" href="#">
@@ -73,7 +109,7 @@ function formatarTexto(?string $texto): string {
     </nav>
 
     <div class="container">
-        <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
             <div>
                 <h2 class="fw-bold text-custom-green mb-1">Painel de Controle</h2>
                 <p class="text-secondary mb-0">Gerencie e acompanhe o status dos animais cadastrados.</p>
@@ -82,8 +118,18 @@ function formatarTexto(?string $texto): string {
                 + Novo Animal
             </a>
         </div>
-
-      
+        <ul class="nav nav-tabs mb-4 border-bottom-0">
+            <li class="nav-item">
+                <a class="nav-link <?= $aba === 'todos' ? 'active fw-bold text-custom-green' : 'text-secondary' ?>" href="painelAnimais.php?aba=todos">
+                    <i class="fa-solid fa-list me-1"></i> Todos os Animais
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link <?= $aba === 'disponiveis' ? 'active fw-bold text-custom-green' : 'text-secondary' ?>" href="painelAnimais.php?aba=disponiveis">
+                 Disponíveis para Adoção
+                </a>
+            </li>
+        </ul>
         <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
@@ -99,7 +145,6 @@ function formatarTexto(?string $texto): string {
                     </thead>
                     <tbody>
                         <?php if (empty($animais)): ?>
-                           
                             <tr>
                                 <td colspan="6" class="text-center py-5 text-secondary">
                                     <div class="mb-2">
@@ -109,16 +154,25 @@ function formatarTexto(?string $texto): string {
                                 </td>
                             </tr>
                         <?php else: ?>
-                          
                             <?php foreach ($animais as $animal): ?>
                                 <tr>
-                                    <td class="ps-4 fw-semibold text-dark"><?= formatarTexto($animal['nome']) ?></td>
+                                    <td class="ps-4 fw-semibold text-dark">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <?php if (!empty($animal['foto'])): ?>
+                                                <img src="../uploads/<?= htmlspecialchars($animal['foto']) ?>" alt="<?= formatarTexto($animal['nome']) ?>" style="width: 38px; height: 38px; object-fit: cover; border-radius: 50%;">
+                                            <?php else: ?>
+                                                <div class="bg-light d-flex align-items-center justify-content-center text-muted rounded-circle border" style="width: 38px; height: 38px;">
+                                                    <i class="fa-solid fa-paw small"></i>
+                                                </div>
+                                            <?php endif; ?>
+                                            <span><?= formatarTexto($animal['nome']) ?></span>
+                                        </div>
+                                    </td>
                                     <td><?= formatarTexto($animal['especie']) ?></td>
                                     <td><?= formatarTexto($animal['raca']) ?></td>
-                                    <td><?= htmlspecialchars($animal['idade']) ?> anos</td>
+                                    <td><?= formatarIdade($animal['idade']) ?></td>
                                     <td>
-                                        <?php 
-                                           
+                                        <?php
                                             $st = formatarTexto($animal['status'] ?? 'Disponível');
                                             $badgeClass = 'badge-status-disponivel';
                                             if (mb_strtolower($st) === 'adotado') $badgeClass = 'badge-status-adotado';
@@ -127,11 +181,9 @@ function formatarTexto(?string $texto): string {
                                         <span class="badge rounded-pill px-3 py-2 <?= $badgeClass ?>"><?= $st ?></span>
                                     </td>
                                     <td class="pe-4 text-end">
-                                        
                                         <a href="formAnimal.php?id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
-                                       
                                         <a href="painelAnimais.php?action=delete&id=<?= $animal['id'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja realmente excluir este animal?');" title="Excluir">
                                             <i class="fa-solid fa-trash"></i>
                                         </a>
