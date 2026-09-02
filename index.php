@@ -2,8 +2,7 @@
 
 session_start();
 
-// Carrega o autoloader do Composer para mapear namespaces automaticamente
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php'; 
 
 use Controller\UserController;
 
@@ -13,9 +12,7 @@ $userController = new UserController();
 
 $action = $_GET['action'] ?? 'login';
 
-/**
- * Roteamento de Ações Globais
- */
+
 if ($action === 'logout') {
     $userController->logout();
     exit();
