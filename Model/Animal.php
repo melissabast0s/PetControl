@@ -19,8 +19,8 @@ class Animal {
      * @param string $raca Raça do animal
      * @param int $idade Idade do animal em anos
      * @param string $status Status do animal - Disponível, Adotado, Tratamento
-     * @param int $userId ID do usuário proprietário/responsável
-     * @return bool Retorna true em caso de sucesso ou false em caso de falha
+     * @param int $userId ID do usuário responsável
+     * @return bool Retorna true em caso de sucesso ou false só se falhar
      */
     public function create(string $nome, string $especie, string $raca, int $idade, string $status, int $userId): bool {
         $stmt = $this->db->prepare(
@@ -94,9 +94,9 @@ class Animal {
     /**
      * Remove o registro de um animal do banco de dados
      *
-     * @param int $id ID do animal pra removido
+     * @param int $id ID do animal pra ser removido
      * @param int $userId ID do usuário 
-     * @return bool Retorna true em caso de sucesso na exclusão ou false em caso de erro
+     * @return bool Retorna true em caso de sucesso na exclusão ou false se falhar
      */
     public function delete(int $id, int $userId): bool {
         $stmt = $this->db->prepare("DELETE FROM animais WHERE id = :id AND user_id = :user_id");

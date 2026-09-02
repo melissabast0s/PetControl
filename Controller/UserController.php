@@ -13,16 +13,16 @@ class UserController {
     }
 
     /**
-     * Realiza a verificação de credenciais e autentica a sessão do usuário.
+     * autentica a sessão do usuário
      *
      * @param string $email E-mail informado no login
      * @param string $senha Senha informada no login
-     * @return bool Retorna true se a autenticação for bem-sucedida, falso caso contrário
+     * @return bool Retorna true se a autenticação der certo, falso se falhar
      */
     public function login(string $email, string $senha): bool {
         $user = $this->userModel->getByEmail($email);
 
-        // Verifica a existência do usuário e valida o hash da senha
+        // Verifica a existência do usuário e valida senha
         if ($user && password_verify($senha, $user['senha'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nome'] = $user['nome'];
@@ -33,15 +33,15 @@ class UserController {
     }
 
     /**
-     * Cadastra um novo usuário caso o e-mail informado ainda não esteja cadastrado
+     * Cadastra um novo usuário se o e-mail informado ainda não foi cadastrado
      *
      * @param string $nome Nome do usuário
      * @param string $email E-mail do usuário
      * @param string $senha Senha do usuário
-     * @return bool Retorna true se registrado com sucesso, falso se e-mail já existir
+     * @return bool Retorna true se for registrado com sucesso, falso se o e-mail já existir
      */
     public function register(string $nome, string $email, string $senha): bool {
-        // Impede duplicidade de cadastros por e-mail
+        // Impede 2 cadastros por e-mail
         if ($this->userModel->getByEmail($email)) {
             return false;
         }

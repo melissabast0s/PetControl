@@ -1,10 +1,4 @@
 <?php
-/**
- * Arquivo Principal / Ponto de Entrada (Entry Point)
- * 
- * Gerencia o roteamento inicial da aplicação, processa a autenticação
- * de login do usuário e redireciona para os painéis correspondentes.
- */
 
 session_start();
 
@@ -13,10 +7,10 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Controller\UserController;
 
-// Instancia o controlador de usuários
+
 $userController = new UserController();
 
-// Captura a ação solicitada via URL (padrão: 'login')
+
 $action = $_GET['action'] ?? 'login';
 
 /**
@@ -28,7 +22,7 @@ if ($action === 'logout') {
 }
 
 if ($action === 'dashboard') {
-    // Verifica se há uma sessão ativa antes de redirecionar para o painel
+    
     if (isset($_SESSION['user_id'])) {
         header('Location: View/painelAnimais.php');
         exit();
@@ -44,19 +38,19 @@ $loginMessage = '';
  * Processamento do Formulário de Login (Requisição POST)
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitização e validação das entradas do formulário
+    
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
 
     if ($email && !empty($senha)) {
-        // Tenta autenticar o usuário
+        
         if ($userController->login($email, $senha)) {
             header('Location: View/painelAnimais.php');
             exit();
         }
     }
     
-    // Mensagem exibida caso a validação ou credenciais falhem
+    
     $loginMessage = 'E-mail ou senha inválidos!';
 }
 ?>
@@ -66,16 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PetControl - Login</title>
-    <!-- CSS Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS Toastify (Notificações) -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <!-- CSS Estilo Global -->
     <link rel="stylesheet" href="templates/css/global.css">
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-    <!-- Card Principal de Login -->
+    
     <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
         <h3 class="text-center mb-4 text-success fw-bold">PetControl</h3>
 
@@ -96,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- JS Toastify para exibição de erros -->
+   
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <?php if (!empty($loginMessage)): ?>
     <script>

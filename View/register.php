@@ -1,8 +1,7 @@
 <?php
 /**
  * View de Cadastro de Usuário (Register)
- * 
- * Exibe o formulário de cadastro e processa o envio dos novos dados de conta.
+ * Exibe o formulário de cadastro e processa o envio dos novos dados de conta
  */
 
 session_start();
@@ -17,10 +16,10 @@ $registerMessage = '';
 $isSuccess = false;
 
 /**
- * Processamento do Formulário de Cadastro (Requisição POST)
+ * Processamento do Formulário de Cadastro com a requisição POST
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitização e validação dos dados submetidos
+    // Validação dos dados 
     $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
@@ -43,17 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PetControl - Cadastro</title>
-    <!-- CSS Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS Toastify -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <!-- Estilos Customizados -->
     <link rel="stylesheet" href="../templates/css/global.css">
     <link rel="stylesheet" href="../templates/css/register.css">
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
-    <!-- Card Principal de Cadastro -->
+    
     <div class="card shadow p-4" style="width: 100%; max-width: 450px;">
         <h3 class="text-center mb-4 text-success fw-bold">Criar Conta</h3>
 
@@ -78,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Notificação e Redirecionamento JS -->
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <?php if (!empty($registerMessage)): ?>
     <script>
@@ -91,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }).showToast();
 
         <?php if ($isSuccess): ?>
-        // Aguarda 2 segundos após mensagem de sucesso antes de redirecionar para a tela inicial
+       
         setTimeout(function() {
             window.location.href = "../index.php";
         }, 2000);

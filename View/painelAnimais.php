@@ -1,10 +1,4 @@
 <?php
-/**
- * listagem de animais.
- * Mostra a tabela com os animais cadastrados
- *
- * @package PetControl\View
- */
 
 session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -30,10 +24,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
 $animais = $animalController->index();
 
 /**
- * converter caracteres especiais HTML
- * no banco de dados.
- *
- * @param string|null $texto Texto vindo do banco de dados.
+ * Converte caracteres especiais HTML no banco de dados
+ * @param string|null $texto Texto do banco de dados
  * @return string Texto decodificado 
  */
 function formatarTexto(?string $texto): string {
