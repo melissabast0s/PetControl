@@ -1,12 +1,7 @@
 <?php
-/**
- * View de Cadastro de Usuário (Register)
- * Exibe o formulário de cadastro e processa o envio dos novos dados de conta
- */
 
 session_start();
 
-// Carrega o autoloader do Composer a partir da pasta View
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Controller\UserController;
@@ -15,11 +10,8 @@ $userController = new UserController();
 $registerMessage = '';
 $isSuccess = false;
 
-/**
- * Processamento do Formulário de Cadastro com a requisição POST
- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validação dos dados 
+    // validação dos dados 
     $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';

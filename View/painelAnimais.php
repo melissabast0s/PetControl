@@ -5,7 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use Controller\AnimalController;
 
-// Verifica se o usuário está autenticado
+// verifica se o usuário é autenticado
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../index.php');
     exit();
@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $animalController = new AnimalController();
 
-// para excluir o animal
+// pra excluir o animal
 $action = filter_input(INPUT_GET, 'action', FILTER_DEFAULT);
 $deleteId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -33,9 +33,9 @@ if ($aba === 'disponiveis') {
 }
 
 /**
- * Converte caracteres especiais HTML no banco de dados
- * @param string|null $texto Texto do banco de dados
- * @return string Texto decodificado
+ * converte os caracteres especiais do html no banco de dados
+ * @param string|null $texto texto do banco de dados
+ * @return string texto decodificado
  */
 function formatarTexto(?string $texto): string {
     if (empty($texto)) return '';
@@ -58,7 +58,7 @@ function formatarTexto(?string $texto): string {
 function formatarIdade($idade): string {
     $num = (float)$idade;
 
-    // Se o for menor que 1 (ex: 0.1, 0.6, 0.11), são meses
+    // se o for menor que 1 (ex: 0.1, 0.6, 0.11), são meses
     if ($num < 1.0) {
         $meses = (int)round($num * 10);
 

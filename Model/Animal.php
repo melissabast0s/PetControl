@@ -13,16 +13,16 @@ class Animal {
     }
 
     /**
-     * Insere um novo registro do animal no banco de dados
+     * insere um registro novo do animal no banco de dados
      *
-     * @param string $nome Nome do animal
-     * @param string $especie Espécie do animal
-     * @param string $raca Raça do animal
-     * @param float $idade Idade do animal 
-     * @param string $status Status do animal 
+     * @param string $nome nome do animal
+     * @param string $especie espécie do animal
+     * @param string $raca raça do animal
+     * @param float $idade idade do animal 
+     * @param string $status status do animal 
      * @param string|null $foto nome do arquivo da foto do animal
      * @param int $userId ID do usuário responsável
-     * @return bool Retorna true em caso de sucesso ou false só se falhar
+     * @return bool retorna true em caso de sucesso ou false só se falhar
      */
     public function create(string $nome, string $especie, string $raca, float $idade, string $status, ?string $foto, int $userId): bool {
         try {
@@ -45,9 +45,9 @@ class Animal {
     }
 
     /**
-     * Busca todos os animais de um usuário específico
+     * busca todos os animais de um usuário específico
      * @param int $userId ID do usuário
-     * @return array Array com os animais encontrados
+     * @return array array com os animais encontrados
      */
     public function getAllByUserId(int $userId): array {
         try {
@@ -61,9 +61,9 @@ class Animal {
     }
 
     /**
-     * Busca apenas os animais disponíveis de um usuário
+     * busca apenas os animais disponíveis de um usuário
      * @param int $userId ID do usuário
-     * @return array Array com os animais com status disponivel
+     * @return array array com os animais com status disponivel
      */
     public function getDisponiveisByUserId(int $userId): array {
         try {
@@ -77,11 +77,11 @@ class Animal {
     }
 
     /**
-     * Busca um único animal pelo seu ID e ID do usuário
+     * busca um único animal pelo seu ID e ID do usuário
      *
      * @param int $id ID do animal
      * @param int $userId ID do usuário
-     * @return array|null Dados do animal na array ou null se não for encontrado
+     * @return array|null dados do animal na array ou null se não for encontrado
      */
     public function getById(int $id, int $userId): ?array {
         try {
@@ -95,17 +95,17 @@ class Animal {
     }
 
     /**
-     * Atualiza os dados do animal 
+     * atualiza os dados do animal 
      *
      * @param int $id ID do animal pra atualizar
-     * @param string $nome Novo nome do animal
+     * @param string $nome novo nome do animal
      * @param string $especie espécie do animal
      * @param string $raca  raça do animal
      * @param float $idade idade do animal
      * @param string $status  status do animal
      * @param string|null $foto nome do arquivo da foto do animal
      * @param int $userId ID do usuário
-     * @return bool Retorna true se a atualização acontecer ou false se falhar
+     * @return bool retorna true se a atualização acontecer ou false se falhar
      */
     public function update(int $id, string $nome, string $especie, string $raca, float $idade, string $status, ?string $foto, int $userId): bool {
         try {
@@ -131,11 +131,11 @@ class Animal {
     }
 
     /**
-     * Remove o registro de um animal do banco de dados
+     * remove o registro de um animal do banco de dados
      *
      * @param int $id ID do animal pra ser removido
      * @param int $userId ID do usuário
-     * @return bool Retorna true em caso de sucesso na exclusão ou false se falhar
+     * @return bool retorna true em caso de sucesso na exclusão ou false se falhar
      */
     public function delete(int $id, int $userId): bool {
         try {

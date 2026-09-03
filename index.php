@@ -6,19 +6,18 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Controller\UserController;
 
-
 $userController = new UserController();
 
 
 $action = $_GET['action'] ?? 'login';
 
 
-if ($action === 'logout') {
+if ($action === 'sair') {
     $userController->logout();
     exit();
 }
 
-if ($action === 'dashboard') {
+if ($action === 'painel') {
     
     if (isset($_SESSION['user_id'])) {
         header('Location: View/painelAnimais.php');
@@ -31,9 +30,8 @@ if ($action === 'dashboard') {
 
 $loginMessage = '';
 
-/**
- * Processamento do Formulário de Login (Requisição POST)
- */
+//processamento do formulário de login 
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);

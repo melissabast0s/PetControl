@@ -15,14 +15,14 @@ class UserController {
     /**
      * autentica a sessão do usuário
      *
-     * @param string $email E-mail informado no login
-     * @param string $senha Senha informada no login
-     * @return bool Retorna true se a autenticação der certo, falso se falhar
+     * @param string $email e-mail informado no login
+     * @param string $senha senha informada no login
+     * @return bool retorna true se a autenticação der certo, falso se falhar
      */
     public function login(string $email, string $senha): bool {
         $user = $this->userModel->getByEmail($email);
 
-        // Verifica a existência do usuário e valida senha
+        // verifica a existência do usuário e valida senha
         if ($user && password_verify($senha, $user['senha'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nome'] = $user['nome'];
@@ -33,15 +33,15 @@ class UserController {
     }
 
     /**
-     * Cadastra um novo usuário se o e-mail informado ainda não foi cadastrado
+     * cadastra um usuário novo se o e-mail ainda não foi cadastrado
      *
-     * @param string $nome Nome do usuário
-     * @param string $email E-mail do usuário
-     * @param string $senha Senha do usuário
-     * @return bool Retorna true se for registrado com sucesso, falso se o e-mail já existir
+     * @param string $nome nome do usuário
+     * @param string $email e-mail do usuário
+     * @param string $senha senha do usuário
+     * @return bool retorna true se for registrado com sucesso, falso se o e-mail já existir
      */
     public function register(string $nome, string $email, string $senha): bool {
-        // Impede 2 cadastros por e-mail
+        // impede 2 cadastros por e-mail
         if ($this->userModel->getByEmail($email)) {
             return false;
         }
@@ -50,7 +50,7 @@ class UserController {
     }
 
     /**
-     * Tira a sessão atual do usuário e redireciona para a página inicial
+     * tira a sessão atual do usuário e redireciona pra página inicial
      *
      * @return void
      */
